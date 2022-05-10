@@ -1,0 +1,20 @@
+<div class="row gap-md-5 gap-0 w-100 justify-content-evenly">
+    <div class="col-md-3 col-5  card bg-light rounded-3 border-1 border-success d-flex justify-content-center align-content-center" style="height: 200px">
+        <div class="display-1 text-black text-center fw-bolder">+</div>
+    </div>
+    {% if notes %}
+        {% for note in notes %}
+            <div class="col-md-3 col-5  card bg-light rounded-3 border-1 border-success d-flex justify-content-center align-content-center" style="height: 200px">
+                <div class="text-black text-center d-flex flex-column g-2 h-100 justify-content-between p-2">
+                    <div class="fw-bold">{{ note.titulo }}</div>
+                    <div class="fw-light">{{ note.texto }}</div>
+                    <div class="d-inline-flex flex-row gap-2" style="overflow-x: scroll">
+                        {% for tag in note.tags.values %}
+                            <div class="badge text-black-50 border rounded-pill">{{ tag.name }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>

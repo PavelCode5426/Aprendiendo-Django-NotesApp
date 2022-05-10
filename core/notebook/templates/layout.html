@@ -11,8 +11,8 @@
 </head>
 <body>
 <div class="container">
+    <h3 class="display-3 text-center mb-2">{% if titleHead%}{{ titleHead }}{% else %}Super Agenda{% endif %}</h3>
     {% block container %}
-        <h3 class="display-3 text-center">Lista de Notas</h3>
         <div class="row gap-5 justify-content-center align-content-center">
             <div class="col-12 rounded-3 shadow p-5">
                 {% block container_notes %}{% endblock %}

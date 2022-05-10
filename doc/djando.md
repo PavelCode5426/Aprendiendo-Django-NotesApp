@@ -227,6 +227,35 @@ urlpatterns = [
 
 La vista puede retornar diferentes tipos de objetos, por ejemplo **HttpResponse, JsonResponse**.
 
+## Vistas basadas en clases
+
+Las vistas basadas en clases son una forma mas organizada de crear las vistas en nuestra aplicacion.
+
+``` python
+# Esta vista esta diseñada unicamente para listar contenido de un modelo, se le pasa la plantilla y se sobrescribe el metodo de get_context_data de forma que se actualicen los datos que se enviaran a la pantalla
+
+class NotesListView(ListView):
+    model = Note
+    template_name = 'pages/notes_list.html'
+
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Notas'
+        #context['notes'] = context['object_list']
+        return context
+
+class NoteBooksListView(ListView):
+    model = NoteBook
+    template_name = 'pages/notebooks_list.html'
+
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Libros de Notas'
+        context['titleHead'] = 'Listado de Libros de Notas'
+        #context['notebooks'] = context['object_list']
+        return context
+```
+Tambien se puede editar el metodo get_query_set(self) el cual se utiliza para filtrar la consulta.
  # Plantillas
 
  Para trabajar con plantillas crearemos una carpeta la cual contendra todos las plantillas de la aplicacion. Para incluir los direcctorios vamos al settings.py y en la variable TEMPLATES en el valor DIRS agregamos los directorios.

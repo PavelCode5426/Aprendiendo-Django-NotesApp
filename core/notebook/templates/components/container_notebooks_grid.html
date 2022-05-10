@@ -1,0 +1,15 @@
+
+<div class="row gap-md-5 gap-0 w-100 justify-content-evenly">
+    <div class="col-md-3 col-5  card bg-light rounded-3 border-1 border-success d-flex justify-content-center align-content-center" style="height: 200px">
+        <div class="display-1 text-black text-center fw-bolder">+</div>
+    </div>
+    {% if notebooks %}
+        {% for notebook in notebooks %}
+            <div class="col-md-3 col-5  card bg-light rounded-3 border-1 border-success d-flex justify-content-center align-content-center" style="height: 200px">
+                <div class="text-black text-center d-flex flex-column g-2 h-100 justify-content-center">
+                    <div class="fw-bold">{{ notebook.titulo }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>

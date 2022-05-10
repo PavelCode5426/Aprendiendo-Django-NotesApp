@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+
+{% block container %}
+     <a  class="btn btn-primary float-end mb-5">Nueva Nota</a>
+    <a href="{% url 'home' %}" class="btn btn-link float-start mb-5"><< Regresar</a>
+    <div class="mt-auto p-2">
+    {% include 'components/container_notes_grid.html' %}
+    </div>
+{% endblock %}

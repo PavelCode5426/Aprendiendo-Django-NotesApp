@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+{% block container_notes %}
+    <a href="{% url 'notes_list' %}"><h3 class="border-bottom pb-2 mb-2">Lista de Notas</h3></a>
+    {% include 'components/container_notes_row.html' %}
+{% endblock %}
+
+{% block container_notebooks %}
+    <a href="{% url 'notebook_list' %}"><h3 class="border-bottom pb-2 mb-2">Lista de Cuadernos</h3></a>
+    {% include 'components/container_notebooks_row.html' %}
+{% endblock %}
