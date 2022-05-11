@@ -1,0 +1,7 @@
+{% if form.errors %}
+    <ul class="card alert-danger">
+        {% for error in form.errors.values %}
+            {{ error }}
+        {% endfor %}
+    </ul>
+{% endif %}

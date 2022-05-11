@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+
+{#{% block container %}#}
+{#<div class="container-md row justify-content-center gap-2">#}
+{#    <div class="col-12 input-group">#}
+{#        <input name="titulo" class="form-control" placeholder="Titulo">#}
+{#    </div>#}
+{#    <div class="col-12 input-group">#}
+{#        <input name="notebook" class="form-control" placeholder="Cuaderno">#}
+{#    </div>#}
+{#    <div class="col-12 input-group">#}
+{#        <textarea name="text" class="form-control" placeholder="Texto"></textarea>#}
+{#    </div>#}
+{#    <div class="col-12 input-group">#}
+{#        <input name="titulo" class="form-control" placeholder="Tags">#}
+{#    </div>#}
+{#</div>#}
+{#{% endblock %}#}
+
+{% block container %}
+    {% include 'components/show_errors.html' %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="container-md row justify-content-center gap-2 mb-2">
+            {{ form }}
+        </div>
+        <div class="d-flex flex-row gap-3 justify-content-center align-content-center">
+            <input type="submit" class="btn btn-primary" value="Crear">
+            <a href="{% url 'notes_list' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+{% endblock %}

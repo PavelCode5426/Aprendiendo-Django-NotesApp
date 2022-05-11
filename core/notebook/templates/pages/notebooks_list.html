@@ -1,7 +1,6 @@
 {% extends 'layout.html' %}
 
 {% block container %}
-    <a  class="btn btn-primary float-end mb-5">Nuevo Libro de Notas</a>
     <a href="{% url 'home' %}" class="btn btn-link float-start mb-5"><< Regresar</a>
     <div class="mt-auto p-2">
     {% include 'components/container_notebooks_grid.html' %}

@@ -16,16 +16,16 @@ class Tag(HasTimeStamp):
         return self.name
 
 class NoteBook(HasTimeStamp):
-    titulo = models.CharField(max_length=250,default='Nuevo Libro de Notas')
+    titulo = models.CharField(max_length=250,default='Nuevo Libro de Notas',unique=True)
 
     def __str__(self):
         return self.titulo
 
 class Note(HasTimeStamp):
-    titulo = models.CharField(max_length=255,default='Nueva Nota')
+    titulo = models.CharField(max_length=255,default='Nueva Nota',unique=True)
     texto = models.TextField(blank=True)
-    tags = models.ManyToManyField(Tag)
-    notebook = models.ForeignKey(NoteBook,on_delete=models.SET_NULL,null=True)
+    tags = models.ManyToManyField(Tag,blank=True)
+    notebook = models.ForeignKey(NoteBook,on_delete=models.SET_NULL,null=True,blank=True)
 
     def __str__(self):
         return self.titulo

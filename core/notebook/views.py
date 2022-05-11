@@ -1,11 +1,11 @@
-from multiprocessing import get_context
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse_lazy
 
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
 # Create your views here.
-
+from core.notebook.form import NotesForm, NoteBookForm
 from core.notebook.models import Note, NoteBook
 
 
@@ -29,7 +29,6 @@ class NotesListView(ListView):
         context['titleHead'] = 'Listado de Notas'
         context['notes'] = context['object_list']
         return context
-
 class NoteBooksListView(ListView):
     model = NoteBook
     template_name = 'pages/notebooks_list.html'
@@ -40,3 +39,44 @@ class NoteBooksListView(ListView):
         context['titleHead'] = 'Listado de Libros de Notas'
         context['notebooks'] = context['object_list']
         return context
+
+
+class NotesCreateView(CreateView):
+    model = Note
+    form_class = NotesForm
+    template_name = 'components/container_new_all.html'
+    success_url = reverse_lazy('notes_list') #Redireccionar cuando se haya enviado OK
+
+
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        context['title']=context['titleHead']='Creando Nueva Nota'
+        context['cancel_url']= reverse_lazy('notes_list')
+        return context
+
+class NoteBookCreateView(CreateView):
+    model = NoteBook
+    form_class = NoteBookForm
+    template_name = 'components/container_new_all.html'
+    success_url = reverse_lazy('notebook_list') #Redireccionar cuando se haya enviado OK
+
+    def post(self, request, *args, **kwargs):
+        response=None
+        #form = NoteBookForm(request.POST)
+        form = self.get_form()
+        if form.is_valid():
+            form.save()
+            response=HttpResponseRedirect(self.success_url)
+        else:
+            self.object = None #Aqui se almacena el objeto que se crea, volverlo a poner en Null
+            context= self.get_context_data(**kwargs)
+            context['form'] = form
+            response=render(request,self.template_name,context)
+        return response
+
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        context['title']=context['titleHead']='Creando Nueva Libreta'
+        context['cancel_url'] = reverse_lazy('notebook_list')
+        return context
+

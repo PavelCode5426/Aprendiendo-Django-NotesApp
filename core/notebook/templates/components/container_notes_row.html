@@ -1,10 +1,10 @@
 <div class="d-flex flex-row gap-2 w-100" style="height: 350px;overflow-x: scroll">
-    <div class="card bg-light rounded-3 border-1 border-success d-flex justify-content-center align-content-center" style="width: 200px">
-        <div class="display-1 text-black text-center">+</div>
+    <div class="create-new-note card bg-light rounded-3 border-1 border-success d-flex justify-content-center align-content-center" style="width: 200px">
+        <a href="{% url 'notes_create' %}"><div class="display-1 text-black text-center">+</div></a>
     </div>
     {% if notes %}
         {% for note in notes %}
-            <div class="card bg-light rounded-3 p-3 border-1 border-success d-flex justify-content-center align-content-center" style="width: 200px">
+            <div class="edit-note card bg-light rounded-3 p-3 border-1 border-success d-flex justify-content-center align-content-center" style="width: 200px">
                 <div class="text-black text-center d-flex flex-column g-2 h-100 justify-content-between">
                     <div class="">{{ note.titulo }}</div>
                     <div class="">{{ note.texto }}</div>
@@ -18,3 +18,4 @@
         {% endfor %}
     {% endif %}
 </div>
+

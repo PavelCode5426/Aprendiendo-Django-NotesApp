@@ -255,7 +255,209 @@ class NoteBooksListView(ListView):
         #context['notebooks'] = context['object_list']
         return context
 ```
+
 Tambien se puede editar el metodo get_query_set(self) el cual se utiliza para filtrar la consulta.
+
+Tambien existe un metodo dispatch el cual recibe la paticion, puede resultar util en algun momento.
+
+Es importante conocer que los metodos post en django estan protegidos por un token_csrf, dicho token esta activo porque se encuentra el middleware activado. En algunos casos es necesario dehabilitarlo, puede utilizarse el decorador **@csrf_exempt** cubriendo al metodo dispatch o al propio metodo post.
+
+
+``` python
+@method_decorator(csrf_exemp)
+```
+
+Uilizando los **CreateView**, es el mismo concepto que los list views, son una clase que contiene todo lo necesario para hacer vistar de insersion o modificacion de dato, por lo tanto agregan a sus datos un formulario. Estos formularios se crean hererando de la clase **ModelForm** (se puede crear un archivo form.py para contener los formularios si lo desea).
+
+``` python
+# form.py
+from django.forms import ModelForm
+from core.notebook.models import Note, NoteBook
+
+class NotesForm(ModelForm):
+    class Meta:
+        model = Note
+        fields = '__all__'
+        exclude = [] #Cuando trae valores x defecto o valores null
+        
+        
+class NoteBookForm(ModelForm):
+    class Meta:
+        model = NoteBook
+        fields = ['titulo']
+
+# views.py
+class NotesCreateView(CreateView):
+    model = Note
+    form_class = NotesForm
+    template_name = 'components/container_new_note.html'
+    success_url = reverse_lazy('notes_list') #Redireccionar cuando se haya enviado OK
+
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        context['title']=context['titleHead']='Creando Nueva Nota'
+        return context
+
+class NoteBookCreateView(CreateView):
+    model = NoteBook
+    form_class = NoteBookForm
+    template_name = 'components/container_new_notebook.html'
+    success_url = reverse_lazy('notebook_list') #Redireccionar cuando se haya enviado OK
+
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        context['title']=context['titleHead']='Creando Nueva Libreta'
+        return context
+
+
+# urls.py
+path('notes/add',NotesCreateView.as_view(),name='notes_create')
+path('notebooks/add',NoteBookCreateView.as_view()name='notebook_create')
+
+
+#container_new_note.html
+# Incleible como django crea el formulario con los tipos de datos.
+{% block container %}
+    <form method="post" action="/">
+        {% csrf_token %}
+        <div class="container-md row justify-content-center gap-2">
+            {{ form }}
+        </div>
+    </form>
+{% endblock %}
+
+#Este formulario se puede modificar o mostrar de diferentes formas.
+{{form.as_ul}} #Se muestra con componentes html <li></li>
+{{form.as_table}} #Se muestra con componentes html <tr></tr>
+{{form.as_p}} #Se muestra con componentes html <p></p>
+
+# Accediendo a un determinado campo del Formulario
+{{form.{campo}}}
+{{form.{campo}.label}}
+{{form.{campo}.value}}
+
+```
+
+Los **ModelForm** tambien se pueden modificar sus campos utilizando el atributo **widgets,labels** 
+
+``` python
+class NoteBookForm(ModelForm):
+    class Meta:
+        model = NoteBook
+        fields = ['titulo']
+        labels = {
+            'titulo':'Titulo de Libreta'
+        }
+
+        widgets = {
+            'titulo': TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese un Titulo',
+                'autocomplete': 'off'
+            })
+        }
+   
+#Cuando se busca hacer una unica vista para los formularios se puede hacer lo siguiente.
+
+<div class="container-md row justify-content-center gap-2 mb-2">
+            {% for field in form.visible_fields %}
+                <div class="input-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                </div>
+            {% endfor %}
+        </div>
+
+
+# Para evitar estar escribiendo lo mismo muchas veces...
+widgets={
+            'titulo': TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese un Titulo',
+                'autocomplete': 'off'
+            }),
+            'texto': Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese su nota',
+                'autocomplete': 'off',
+                'rows':'3'
+            }),
+            'tags': SelectMultiple(attrs={
+                'class': 'form-control',
+                'placeholder': 'Seleccione sus Tags',
+                'autocomplete': 'off'
+            }),
+            'notebook': Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Seleccione su libreta',
+                'autocomplete': 'off'
+            })
+        }
+
+# se puede sobreescribir el constructor quedando este resultado.
+        class NotesForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Individual
+        self.fields['titulo'].widget.attrs.update({'class': 'form-control', 'autocomplete': 'off'})
+
+        # Para todos
+        for form in self.visible_fields():
+            # Forma 1
+            form.field.widget.attrs.update({'class': 'form-control', 'autocomplete': 'off'})
+
+            # Forma 2
+            form.field.widget.attrs['class'] = 'form-control'
+            form.field.widget.attrs['autocomplete'] = 'off'
+
+# Otra alternativa seria utilizar la libreria **widget_tweaks**
+
+
+```
+
+## Validaciones de Formulario
+
+Primero que todo los formularios que estan vinculados a un modelo se validan tal cual, si ocurre un error al insertar el modelo, actualizar o eliminar este volvera a la misma pagina con mensajes de error. Estos errores se capturan mediante el {{form.errors}}
+
+Para validar el formulario
+``` python 
+
+# este codigo es opcional. Django lo hace automatico
+class NoteBookCreateView(CreateView)
+      def post(self, request, *args, **kwargs):
+        #form = NoteBookForm(request.POST)
+        form = self.get_form()
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(self.success_url)
+        else:
+            self.object = None #Aqui se almacena el objeto que se crea, volverlo a poner en Null
+            context= self.get_context_data(**kwargs)
+            context['form'] = form
+            return render(request,self.template_name,context)
+
+# Si el formulario es invalido vuelve a cargar la misma pagina con los mismos datos y en caso contrario ve a otra url
+
+#show_errors.html
+{% if form.errors %}
+    <ul class="card alert-danger">
+        {% for error in form.errors.values %}
+            {{ error }}
+        {% endfor %}
+    </ul>
+{% endif %}
+
+#in fields
+{% for field in form.visible_fields %}
+  <div class="form-group">
+    <label class="fw-bolder" for="{{ field.name }}">{{ field.label }}</label>
+     {{ field }}
+    <label class="text-danger">{{ field.errors }}</label>
+  </div>
+{% endfor %}
+```
+
+
  # Plantillas
 
  Para trabajar con plantillas crearemos una carpeta la cual contendra todos las plantillas de la aplicacion. Para incluir los direcctorios vamos al settings.py y en la variable TEMPLATES en el valor DIRS agregamos los directorios.
@@ -360,8 +562,19 @@ Para leer archivos **static** en cada **.html** es necesario incluir en el tope 
 </html>
 ```
 
+# Decoradores en Django
+
+Django utiliza decoradores para validar determinada informacion antes de ejecutar un metodo. 
+
+``` python
+# Para utilizar los decoradores de Django hay que importar la libreria.
+
+from django.utils.decorators import method_decorator
+
+@method_decorator(login_required)
+@method_decorator(csrf_exemp)
+def dispatch(.....):
+    .......
 
 
-
-
-
+```

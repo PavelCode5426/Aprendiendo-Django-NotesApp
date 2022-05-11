@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block container %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="container-md row justify-content-center gap-2 mb-2">
+            {% for field in form.visible_fields %}
+                <div class="form-group">
+                    <label class="fw-bolder" for="{{ field.name }}">{{ field.label }}</label>
+                    {{ field }}
+                <label class="text-danger">{{ field.errors }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="d-flex flex-row gap-3 justify-content-center align-content-center">
+            <input type="submit" class="btn btn-primary" value="Crear">
+            <a href="{{ cancel_url }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+{% endblock %}

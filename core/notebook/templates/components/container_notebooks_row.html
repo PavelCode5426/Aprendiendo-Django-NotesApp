@@ -1,11 +1,11 @@
 
 <div class="d-flex flex-row gap-2 w-100" style="height: 350px;overflow-x: scroll">
-    <div class="card bg-light rounded-3 border-1 border-success d-flex justify-content-center align-content-center" style="width: 200px">
-        <div class="display-1 text-black text-center">+</div>
+    <div class="create-new-notebook col-md-3 col-5  card bg-light rounded-3 border-1 border-success d-flex justify-content-center align-content-center" style="height: 200px">
+        <a href="{% url 'notebook_create' %}"><div class="display-1 text-black text-center fw-bolder">+</div></a>
     </div>
     {% if notebooks %}
         {% for notebook in notebooks %}
-            <div class="card bg-light rounded-3 p-3 border-1 border-success d-flex justify-content-center align-content-center" style="width: 200px">
+            <div class="edit-notebook card bg-light rounded-3 p-3 border-1 border-success d-flex justify-content-center align-content-center" style="width: 200px">
                 <div class="text-black text-center d-flex flex-column g-2 h-100 justify-content-center">
 
                     <div class="">{{ notebook.titulo }}</div>
