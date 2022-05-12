@@ -411,9 +411,16 @@ widgets={
             form.field.widget.attrs['autocomplete'] = 'off'
 
 # Otra alternativa seria utilizar la libreria **widget_tweaks**
-
-
 ```
+
+Existen mas tipos de views, por ejemplo el UpdateView, DeleteView, TemplateView, FormView ... pero se mantiene el concepto principal que es gestionar un modelo mediante una plantilla autogenerada.
+* UpdateView: Crear una vista para actualizar el modelo.
+* DeleteView: Crear una vista para borrar el modelo.
+* TemplateView: Crear una pagina comun y corriente.
+* FormView: Validar los datos del modelo, no hace mas nada. Mediante el uso del mismo se pueden crear validaciones personalizadas sobrescribiendo sus metodos.
+* LoginView: Vista que permite crear el formulario de logueo, es otro Form, solo que este esta preparado para iniciar sesion.
+
+
 
 ## Validaciones de Formulario
 

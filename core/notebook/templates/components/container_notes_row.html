@@ -5,15 +5,17 @@
     {% if notes %}
         {% for note in notes %}
             <div class="edit-note card bg-light rounded-3 p-3 border-1 border-success d-flex justify-content-center align-content-center" style="width: 200px">
-                <div class="text-black text-center d-flex flex-column g-2 h-100 justify-content-between">
-                    <div class="">{{ note.titulo }}</div>
-                    <div class="">{{ note.texto }}</div>
-                    <div class="d-inline-flex flex-row gap-2" style="overflow-x: scroll">
-                        {% for tag in note.tags.values %}
-                            <div class="badge text-black-50 border rounded-pill">{{ tag.name }}</div>
-                        {% endfor %}
+                <a href="{% url 'notes_edit' note.id %}">
+                    <div class="text-black text-center d-flex flex-column g-2 h-100 justify-content-between">
+                        <div class="">{{ note.titulo }}</div>
+                        <div class="">{{ note.texto }}</div>
+                        <div class="d-inline-flex flex-row gap-2" style="overflow-x: scroll">
+                            {% for tag in note.tags.values %}
+                                <div class="badge text-black-50 border rounded-pill">{{ tag.name }}</div>
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         {% endfor %}
     {% endif %}

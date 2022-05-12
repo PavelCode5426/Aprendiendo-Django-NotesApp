@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView
 # Create your views here.
 from core.notebook.form import NotesForm, NoteBookForm
 from core.notebook.models import Note, NoteBook
@@ -53,7 +53,6 @@ class NotesCreateView(CreateView):
         context['title']=context['titleHead']='Creando Nueva Nota'
         context['cancel_url']= reverse_lazy('notes_list')
         return context
-
 class NoteBookCreateView(CreateView):
     model = NoteBook
     form_class = NoteBookForm
@@ -78,5 +77,18 @@ class NoteBookCreateView(CreateView):
         context= super().get_context_data(**kwargs)
         context['title']=context['titleHead']='Creando Nueva Libreta'
         context['cancel_url'] = reverse_lazy('notebook_list')
+        return context
+
+
+class NotesUpdateView(UpdateView):
+    model = Note
+    form_class = NotesForm
+    template_name = 'components/container_new_all.html'
+    success_url = reverse_lazy('notes_list')  # Redireccionar cuando se haya enviado OK
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = context['titleHead'] = 'Editando Nota'
+        context['cancel_url'] = reverse_lazy('notes_list')
         return context
 
